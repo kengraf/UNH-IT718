@@ -6,7 +6,7 @@ For each of the three major cloud vendors (AWS, Azure, and GCP) complete the fol
 3.	Make the cloud storage publicly available.
 
 > [!NOTE]
-> Running the standalone dedicated nginx server you created in the last lab is generally a bad idea.
+> Running the standalone dedicated nginx server you created in the last lab is generally a bad idea for serving a static web site.
 
 Standalone servers have maintenance, monitoring, and run-time costs that create unnecessary overhead for a static public website.  
 

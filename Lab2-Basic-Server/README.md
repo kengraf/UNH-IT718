@@ -18,8 +18,11 @@ For each of the three major cloud vendors (AWS, Azure, and GCP) complete the fol
 - Do you know what resources you will pay for?  Leaving unused compute running is a bad idea.
 - The scripts in these labs do not clean up after themselves.
 
-> [!NOTE]Forward thinking
-> - Your project will require a running server, it can be but does not need to be a web server.  A later lab will show how static pages are best served by configuring cloud storage for that function.
+> [!TIP]
+> **Thinking ahead**
+> - Your project will require a running server, it can be but does not need to be a web server.
+> - You may want to consider installing a platform (Node, React, etc) that you have used in the past for your project.
+> - A later lab will show how static pages are best served by configuring cloud storage for that function.
 
 ## Lab Report
 Provide one or more screenshots for each cloud vendor showing:

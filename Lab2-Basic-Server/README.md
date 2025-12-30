@@ -17,7 +17,10 @@ For each of the three major cloud vendors (AWS, Azure, and GCP) complete the fol
 - Do you want to keep any created resources?  More meaningful names should be considered.
 - Do you know what resources you will pay for?  Leaving unused compute running is a bad idea.
 - The scripts in these labs do not clean up after themselves.
-  
+
+** Forward thinking
+- Your project will require a running server, it can be but does not need to be a web server.  A later lab will show how static pages are best served by configuring cloud storage for that function.
+
 ## Lab Report
 Provide one or more screenshots for each cloud vendor showing:
 1.	The output from the command showing the VM IP addresses.

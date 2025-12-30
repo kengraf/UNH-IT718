@@ -1,7 +1,8 @@
 # Database Session
 
 > [!NOTE]
-> This lab only needs to be completed using AWS.
+> Instructions for this lab are only provided for AWS.
+> It is acceptable to submit equivalent functionality in Azure and GCP.
 
 > [!IMPORTANT]
 > Instructions are provided for AWS, Azure, and GCP.  Pick only one for your lab report.

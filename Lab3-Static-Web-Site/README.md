@@ -21,7 +21,7 @@ __Highly recommended but optional:__
 Use a custom DNS domain (friendly URL) for your site.  All 3 vendors charge $0.50/month to host a DNS zone.  AWS and GCP can act as your DNS registrar for ~$12.year.  Yes, I know sites like <your-name>.github.io are free.  But, being able to talk and show that you understand the entire CI/CD process are great talking points during a hiring interview.  
 
 
-> [!NOTE]
+> [!Tip]
 > In the later Github lab you will automatically push content from a github repo eliminating the need for using a cloud shell to push content by hand.  
 ## Lab Report
 For each cloud vendor show:

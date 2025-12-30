@@ -11,7 +11,7 @@ Labs can be completed using the relevant cloud shell in: AWS, Azure, and GCP.
 | 2 | Basic Compute |  ✅ | ✅ |  ✅ |  
 | 3 | Static Web Site | ✅ | ✅ |  ✅ |    
 | 4 | Cloud Functions |  ✅ | ✅ |  ✅ |  |  
-| 5 | Github Actions |  ✅  | ✅ |  ✅ |  
+| 5 | Github Actions |  ✅  |  |   |  
 | 6 | Database |  ✅ |  |   |    
 | 7 | Identity (OIDC) |  ✅ | |  |  
 | 8 | Kubernetes |  | |  ✅ |   

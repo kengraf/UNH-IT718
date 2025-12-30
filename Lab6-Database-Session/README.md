@@ -3,6 +3,9 @@
 > [!NOTE]
 > This lab only needs to be completed using AWS.
 
+> [!IMPORTANT]
+> Instructions are provided for AWS, Azure, and GCP.  Pick only one for your lab report.
+
 You will deploy an AWS Lambda function written in python (code provided).
 The function takes two http get requests:
 - /new?email=testmail.com

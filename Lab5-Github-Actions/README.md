@@ -21,3 +21,4 @@ In Lab 3 you created a sample website with the content hosted by cloud storage. 
  
 > [!IMPORTANT]
 > The Github repo and the website need to remain available until after grading.
+> Grading involves me making a minor change to your Github repo and seeing the change reflected in your website.

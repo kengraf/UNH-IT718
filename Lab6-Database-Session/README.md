@@ -1,7 +1,7 @@
 # Database Session
 
 > [!NOTE]
-> Instructions for this lab are only provided for AWS.
+> Instructions for this lab are only provided for AWS.  
 > It is acceptable to submit equivalent functionality in Azure and GCP.
 
 You will deploy an AWS Lambda function written in python (code provided).

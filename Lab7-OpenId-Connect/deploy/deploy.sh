@@ -65,7 +65,7 @@ DomainName="${DeployName}.kengraf.com"
 HostedZoneId="Z04154431JUEDZVN0IZ8F"
 
 # Uncomment the next line if you do NOT have a Route53 hosted zone, previous settings will be ignored
-HostedZoneId=""  
+#HostedZoneId=""  
 
 echo "Deploy a CloudFront distribution"
 STACK_NAME="$DeployName-distribution"

@@ -37,10 +37,17 @@ def handler(event, context):
 
         # TODO/FIX the cookie options
         return {
+            "cookies": [
+                f"session={user_uuid}; Secure=true; SameSite=Lax; Path=/",
+                f"user={sub}; Secure=true; SameSite=Lax; Path=/; Max-Age=31536000"
+            ],
+            "isBase64Encoded": False,
             "statusCode": 200,
-            "headers": { "Content-Type": "application/json",
-                       "Set-Cookie": "session="+user_uuid+"; Secure=true; SameSite=Lax; Path=/" },
-            "body": json.dumps({"message": "Session created", "idToken": token})
+            "headers": {
+                "Content-Type": "application/json",
+                "Cache-Control": 'no-cache="Set-Cookie"'
+            },
+            "body": json.dumps({"message": "Session created", "idToken": token, "uuid":user_uuid})
         }
     
     except ValueError as e:

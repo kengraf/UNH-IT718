@@ -100,7 +100,7 @@
             "Compress": true,
             "ForwardedValues": {
               "QueryString": false,
-              "Cookies": { "Forward": "none" }
+              "Cookies": { "Forward": "all" }
             }
           },
           "CacheBehaviors": [

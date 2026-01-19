@@ -64,6 +64,34 @@
         }
       }
     },
+
+    "SetCookieCachePolicy":  {
+      "Type": "AWS::CloudFront::CachePolicy",
+      "Properties": {
+        "CachePolicyConfig": {
+          "Name": "AllowSetCookieCachePolicy",
+          "Comment": "Policy to allow Set-Cookie headers by forwarding all cookies",
+          "DefaultTTL": 86400,
+          "MaxTTL": 31536000,
+          "MinTTL": 1,
+          "ParametersInCacheKeyAndForwardedToOrigin": {
+            "CookiesConfig": {
+              "CookieBehavior": "all"
+            },
+            "HeadersConfig": {
+              "HeaderBehavior": "none"
+            },
+            "QueryStringsConfig": {
+              "QueryStringBehavior": "none"
+            },
+            "EnableAcceptEncodingGzip": true,
+            "EnableAcceptEncodingBrotli": true
+          }
+        }
+      }
+    }
+
+    
     "CloudFrontDistribution": {
       "Type": "AWS::CloudFront::Distribution",
       "Properties": {
@@ -111,15 +139,8 @@
               "AllowedMethods": ["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
               "CachedMethods": ["GET", "HEAD"],
               "Compress": true,
-              "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
-              "ForwardedValues": {
-                "QueryString": true,
-                "Headers": [ "*" ],
-                "Cookies": { "Forward": "all" }
-              },
-              "MinTTL": 0,
-              "DefaultTTL": 0,
-              "MaxTTL": 0
+              "CachePolicyId": { "Ref": "SetCookieCachePolicy" },
+
             }
           ],
           "ViewerCertificate": {

@@ -116,6 +116,7 @@
                 "Headers": [ "*" ],
                 "Cookies": { "Forward": "all" }
               },
+              "CachePolicyId": "658327ea-f89d-4fab-a63d-7e88639e58f6",
               "MinTTL": 0,
               "DefaultTTL": 0,
               "MaxTTL": 0

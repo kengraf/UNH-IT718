@@ -10,5 +10,5 @@ For each of the three major cloud vendors (AWS, Azure, and GCP) complete the fol
 5.	Use the command shell to set a budget alert.
 > [!NOTE]
 > For students new to the cloud:
-> [A Cloud Guru](https://acloud.guru/) provides unlimited access to AWS, Azure, GCP, and Linux courses and Hands-On Labs.  This is a paid subscription service that you can try for free.  If you are interested in certifications [A Cloud Guru](https://acloud.guru/) is an excellent option.
+> [Pluralsite](https://www.pluralsight.com/) formerly [A Cloud Guru](https://acloud.guru/) provides unlimited access to AWS, Azure, GCP, and Linux courses and Hands-On Labs.  This is a paid subscription service that you can try for free.  If you are interested in certifications [Cloud+](https://www.pluralsight.com/individuals/pricing/cloud) is an excellent option.
  

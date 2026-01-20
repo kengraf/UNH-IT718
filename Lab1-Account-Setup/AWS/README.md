@@ -5,7 +5,7 @@
 
 ![Console](Lab1-AWS-console.png)
 
-4.	Open a cloudshell and issue the following commands. Replacing the values for : <ACCOUNT_ID>, <BUDGET_NAME>, < AMOUNT >, and <EMAIL>.
+4.	Open a cloudshell and issue the following commands. Replacing the values for : <ACCOUNT_ID>, <BUDGET_NAME>, < AMOUNT >, and < EMAIL >.
 ```
 aws budgets create-budget --account-id <ACCOUNT_ID> --budget \
   '{"BudgetName":<BUDGET_NAME>,"BudgetLimit":{"Amount":<AMOUNT>,"Unit":"USD"}, \

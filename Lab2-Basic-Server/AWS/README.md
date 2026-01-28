@@ -8,7 +8,7 @@
 KEY_NAME="MyNewKeyPair"
 SECURITY_GROUP_NAME="MySecurityGroup"
 DESCRIPTION="Security group open to the world for SSH & HTTP"
-INSTANCE_TYPE="t2.micro"
+INSTANCE_TYPE="t3.micro"
 ```
 ### Get the default VPC and subnet
 ```

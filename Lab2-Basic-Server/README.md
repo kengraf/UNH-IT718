@@ -20,9 +20,9 @@ For each of the three major cloud vendors (AWS, Azure, and GCP) complete the fol
 
 > [!TIP]
 > **Thinking ahead**
-> - Your project will require a running server, it can be but does not need to be a web server.
-> - You may want to consider installing a platform (Node, React, etc) that you have used in the past for your project.
-> - A later lab will show how static pages are best served by configuring cloud storage for that function.
+> - Your project will *NOT* require a running server, serverless is the right way to go.
+> - Later labs will show how serverless works
+> - Static pages are best served by configuring cloud storage for that function.
 
 ## Lab Report
 Provide one or more screenshots for each cloud vendor showing:

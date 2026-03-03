@@ -55,6 +55,7 @@ aws s3 sync ./ s3://$YOUR_BUCKET_NAME/
 wget http://$YOUR_BUCKET_NAME.s3-website.$REGION.amazonaws.com
 ```
 # Lab Report
+Website URL: http://$YOUR_BUCKET_NAME.s3-website.$REGION.amazonaws.com
 Sample screenshots
 ![CLI screen capture](lab3-aws-cli.png)
 ![Website home page](lab3-aws-website.png)

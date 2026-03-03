@@ -4,11 +4,9 @@
         {
             "Effect": "Allow",
             "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:PutItem",
-                "dynamodb:DeleteItem"
+                "bedrock:InvokeModel"
             ],
-            "Resource": "YOUR_DB_ARN"
+            "Resource": "*"
         }
     ]
 }

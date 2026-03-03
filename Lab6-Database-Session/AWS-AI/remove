@@ -1,4 +1,4 @@
-LAMBDA_NAME=Lab6-session
+LAMBDA_NAME=explainer
 ROLE_NAME=LambdaBedrockRole
 POLICY_NAME=BedrockAccessPolicy
 aws lambda delete-function --function-name $LAMBDA_NAME

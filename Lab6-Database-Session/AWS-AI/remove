@@ -1,0 +1,14 @@
+LAMBDA_NAME=Lab6-session
+ROLE_NAME=Lab6-LambdaDynamoDBRole
+POLICY_NAME=Lab6-DynamoDBAccessPolicy
+TABLE_NAME=Lab6-session
+aws lambda delete-function --function-name $LAMBDA_NAME
+aws logs delete-log-group --log-group-name /aws/lambda/$LAMBDA_NAME
+aws iam delete-role-policy --role-name $ROLE_NAME \
+  --policy-name $POLICY_NAME
+aws iam detach-role-policy --role-name $ROLE_NAME \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+aws iam delete-role --role-name $ROLE_NAME
+
+aws dynamodb delete-table --table-name $TABLE_NAME
+aws dynamodb describe-table --table-name $TABLE_NAME --query 'Table.TableStatus'

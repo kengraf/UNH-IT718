@@ -557,7 +557,7 @@
       renderResult(data, move, pgn);
 
     } catch (err) {
-      renderError(err.message);
+      renderError(err.body);
     } finally {
       btn.classList.remove('loading');
       btn.disabled = false;

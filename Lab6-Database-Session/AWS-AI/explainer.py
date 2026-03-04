@@ -114,20 +114,11 @@ def handler(event, context):
 	try:
 		response = bedrock.converse(
 			modelId=modelId,
-			system=[{"text":"""You are an expert chess analyst with grandmaster-level knowledge. 
-	When analyzing a chess move or position, provide:
-	- A clear evaluation of the move (tactical, strategic, or both)
-	- Specific variations and continuations (use algebraic notation)
-	- Positional themes and plans for both sides
-	- Any tactical motifs, threats, or traps present
-	- Historical or opening theory context where relevant
-	Be thorough, specific, and use precise chess terminology.
-	Format your response in clear sections with headers."""}],
 			messages=[
 				{"role": "user", "content": [{"text": prompt}]}
 			],
 			inferenceConfig={
-				"maxTokens": 4096,        # max output tokens
+				"maxTokens": 2048,        # max output tokens
 				"temperature": 0.7,       # 0.0 - 1.0
 				"topP": 0.9               # optional
 			}
@@ -142,14 +133,12 @@ def handler(event, context):
 
 		print(response)
 		output_text = response["output"]["message"]["content"][0]["text"]
-		formatted_text = output_text.replace("\n", "<br>")
-
 
 		body = {
 			"modelId": modelId,
 			"usage": response["usage"],
 			"metrics": response["metrics"],
-			"html": f"""<div class="response">{formatted_text}</div>"""
+			"body": f"""<div class="response">{output_text}</div>"""
 		}
 		retval = {		
 			"statusCode": 200,
@@ -158,11 +147,15 @@ def handler(event, context):
 		}
 		print(retval)
 		return retval
-	except Error as e:
+	except Exception as e:
 		print(e)
 		return {
-    	    "statusCode": status_code,
-        	"body": json.dumps(e)
+    	    "statusCode": 500,
+			"headers": CORS_HEADERS,
+            "body": json.dumps({
+                "error": "Unable to handle Request",
+                "message": str(e)
+            })
     	}
 
 if __name__ == "__main__":

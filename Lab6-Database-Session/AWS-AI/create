@@ -1,42 +1,45 @@
 set -x
-ROLE_NAME=
+LAMBDA_NAME=explainer
+ROLE_NAME=LambdaBedrockRole
+POLICY_NAME=BedrockAccessPolicy
+
 aws iam create-role \
-  --role-name Lab6-LambdaDynamoDBRole \
-  --assume-role-policy-document file://Lab6-trust-policy.json
+  --role-name LambdaBedrockRole \
+  --assume-role-policy-document file://trust-policy.json
 set +x
 read -n 1 -p "DB role created:"
 set -x
-ROLE_ARN=` aws iam get-role --role-name Lab6-LambdaDynamoDBRole --query "Role.Arn" --output text`
+ROLE_ARN=` aws iam get-role --role-name LambdaBedrockRole --query "Role.Arn" --output text`
 
-zip function.zip Lab6-session.py
-aws lambda create-function --function-name Lab6-session --runtime python3.13 \
-  --role $ROLE_ARN --handler Lab6-session.lambda_handler --zip-file fileb://function.zip \
+zip function.zip explainer.py
+aws lambda create-function --function-name explainer --runtime python3.13 \
+  --role $ROLE_ARN --handler explainer.handler --zip-file fileb://function.zip \
   --query "FunctionName" --output text
 set +x
 read -n 1 -p "Lambda created:"
 set -x
-aws lambda create-function-url-config --function-name Lab6-session --auth-type NONE
-aws lambda add-permission --function-name Lab6-session --action lambda:InvokeFunctionUrl \
+aws lambda create-function-url-config --function-name explainer --auth-type NONE
+aws lambda add-permission --function-name explainer --action lambda:InvokeFunctionUrl \
   --principal "*" --function-url-auth-type NONE --statement-id FunctionURLPublicAccess
 
 aws iam put-role-policy \
-  --role-name Lab6-LambdaDynamoDBRole \
-  --policy-name Lab6-DynamoDBAccessPolicy \
-  --policy-document file://Lab6-dynamodb-policy.json
+  --role-name LambdaBedrockRole \
+  --policy-name BedrockAccessPolicy \
+  --policy-document file://bedrock-policy.json
 set +x
 read -n 1 -p "Role Policy created:"
 set -x
 
 aws iam attach-role-policy \
-  --role-name Lab6-LambdaDynamoDBRole \
+  --role-name LambdaBedrockRolee \
   --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
 aws lambda update-function-configuration \
-  --function-name Lab6-session \
+  --function-name explainer \
   --role $ROLE_ARN  --query "Role" --output text
 
-URL=`aws lambda get-function-url-config --function-name Lab6-session --query "FunctionUrl" --output text`
+URL=`aws lambda get-function-url-config --function-name explainer --query "FunctionUrl" --output text`
 echo $URL
-wget $URL/new?email=test
+
 
 

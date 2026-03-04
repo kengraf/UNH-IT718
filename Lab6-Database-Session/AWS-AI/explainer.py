@@ -99,7 +99,7 @@ When analyzing a chess move or position, provide:
 - Any tactical motifs, threats, or traps present
 - Historical or opening theory context where relevant
 Be thorough, specific, and use precise chess terminology.
-Format your response in clear sections with headers."""],
+Format your response in clear sections with headers."""}],
 		messages=[
 			{"role": "user", "content": [{"text": prompt}]}
 		],

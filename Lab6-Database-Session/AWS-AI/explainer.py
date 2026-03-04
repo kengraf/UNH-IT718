@@ -80,7 +80,14 @@ Please provide:
 5. Any relevant opening theory or named variations
 """
 	return prompt
-	
+
+CORS_HEADERS = {
+    "Access-Control-Allow-Origin":  "*",           # or your specific domain
+    "Access-Control-Allow-Headers": "Content-Type,Authorization",
+    "Access-Control-Allow-Methods": "POST,OPTIONS",
+	"Content-Type": "application/json"
+}
+
 def handler(event, context):
 	print(event)
 	method = (
@@ -92,11 +99,7 @@ def handler(event, context):
 	if method == "OPTIONS":
 		return {
     		"statusCode": 200,
-        	"headers": {
-            	"Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
-                "Access-Control-Allow-Headers": "Content-Type,Authorization"
-        	}
+			"headers": CORS_HEADERS
         }
 
 	body = json.loads(event.get("body"))
@@ -142,17 +145,19 @@ def handler(event, context):
 		formatted_text = output_text.replace("\n", "<br>")
 
 
-		html = f"""<div class="response">{formatted_text}</div>"""
-		return {		
-			"statusCode": 200,
-			"headers": {
-				"Content-Type": "text/html"
-			},
+		body = {
 			"modelId": modelId,
 			"usage": response["usage"],
 			"metrics": response["metrics"],
-			"body": html
+			"html": f"""<div class="response">{formatted_text}</div>"""
 		}
+		retval = {		
+			"statusCode": 200,
+			"headers": CORS_HEADERS,
+			"body": json.dumps(body)
+		}
+		print(retval)
+		return retval
 	except Error as e:
 		print(e)
 		return {

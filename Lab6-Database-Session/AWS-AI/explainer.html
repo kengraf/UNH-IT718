@@ -464,7 +464,7 @@
           <option value="us.anthropic.claude-sonnet-4-5-20250929-v1:0">Claude Sonnet 4.5 — $3.00/1M</option>
         </optgroup>
         <optgroup label="Google">
-          <option value="google.gemma-3-27b-it">Google 3-27b — $0.38/1M</option>
+          <option value="google.gemma-3-27b-it">Gemma 3-27b — $0.38/1M</option>
         </optgroup>
         <optgroup label="Meta Llama">
           <option value="us.meta.llama3-3-70b-instruct-v1:0">Llama 3.3 70B — $0.72/1M</option>
@@ -573,6 +573,8 @@
     const { modelId, usage, metrics, body } = data;
     const provider = modelId.includes('anthropic') ? 'Anthropic' :
                      modelId.includes('amazon') ? 'Amazon' :
+                     modelId.includes('google') ? 'Google' :
+                     modelId.includes('openai') ? 'OpenAI' :
                      modelId.includes('meta') ? 'Meta' : 'Mistral';
     const shortModel = modelId.split('.').slice(1).join('.').replace('v1:0','').replace('v2:0','');
     const totalTokens = usage?.totalTokens || 0;

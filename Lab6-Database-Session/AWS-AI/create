@@ -7,7 +7,7 @@ aws iam create-role \
   --role-name LambdaBedrockRole \
   --assume-role-policy-document file://trust-policy.json
 set +x
-read -n 1 -p "DB role created:"
+read -n 1 -p "Bedrock role created:"
 set -x
 ROLE_ARN=` aws iam get-role --role-name LambdaBedrockRole --query "Role.Arn" --output text`
 

@@ -540,12 +540,7 @@
       // Build the Lambda-style request payload
       const payload = { model, move, pgn };
 
-      // --- MOCK RESPONSE (replace the URL below with your actual Lambda/API Gateway endpoint) ---
-      const mockResponse = await mockLambdaCall(model, move, pgn);
-      renderResult(mockResponse, move, pgn);
-
-      /* REAL CALL — uncomment and replace URL:
-      const response = await fetch('https://YOUR-API-GATEWAY-URL/analyze', {
+      const response = await fetch('hhttps://snpl6uiktfwowtg6vnbk2ct6ze0atcos.lambda-url.us-east-2.on.aws/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -553,7 +548,6 @@
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       renderResult(data, move, pgn);
-      */
 
     } catch (err) {
       renderError(err.message);
@@ -564,30 +558,6 @@
   }
 
   // Mock response simulating your Lambda JSON structure
-  async function mockLambdaCall(modelId, move, pgn) {
-    await new Promise(r => setTimeout(r, 1200 + Math.random() * 800));
-    const inputTokens = 64 + Math.floor(pgn.length / 4);
-    const outputTokens = 400 + Math.floor(Math.random() * 400);
-    return {
-      modelId,
-      usage: { inputTokens, outputTokens, totalTokens: inputTokens + outputTokens },
-      metrics: { latencyMs: 1200 + Math.floor(Math.random() * 2500) },
-      body: `<div class="response">
-        <h2>Move Analysis: ${move}</h2>
-        <p>The move <strong>${move}</strong> is a ${['strong', 'solid', 'aggressive', 'positional'][Math.floor(Math.random()*4)]} choice in this position.</p>
-        <h3>Strategic Considerations</h3>
-        <ul>
-          <li>Controls key central squares and increases piece activity</li>
-          <li>Creates pressure on the opponent's position</li>
-          <li>${pgn ? 'Based on the provided PGN, this continues the established opening strategy' : 'No PGN provided — analysis based on move notation only'}</li>
-        </ul>
-        <h3>Tactical Motifs</h3>
-        <p>Watch for potential <em>discovered attacks</em> and <em>pin tactics</em> arising from this move. The opponent has limited good responses.</p>
-        <h3>Suggested Continuations</h3>
-        <p>Consider following up with piece development and castling to secure king safety.</p>
-      </div>`
-    };
-  }
 
   function renderResult(data, move, pgn) {
     resultCount++;

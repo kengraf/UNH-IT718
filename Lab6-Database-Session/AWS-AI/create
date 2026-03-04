@@ -31,7 +31,7 @@ read -n 1 -p "Role Policy created:"
 set -x
 
 aws iam attach-role-policy \
-  --role-name LambdaBedrockRolee \
+  --role-name LambdaBedrockRole \
   --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 
 aws lambda update-function-configuration \

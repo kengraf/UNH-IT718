@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Chess Move Analyzer</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/9.1.6/marked.min.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -563,8 +564,10 @@
     }
   }
 
-  // Mock response simulating your Lambda JSON structure
-
+marked.setOptions({
+    breaks: true,      // convert \n to <br>
+    gfm: true          // github flavoured markdown (tables, strikethrough etc)
+});
   function renderResult(data, move, pgn) {
     resultCount++;
     document.getElementById('resultCount').textContent = `${resultCount} ${resultCount === 1 ? 'analysis' : 'analyses'}`;
@@ -579,6 +582,8 @@
     const shortModel = modelId.split('.').slice(1).join('.').replace('v1:0','').replace('v2:0','');
     const totalTokens = usage?.totalTokens || 0;
     const inputPct = totalTokens ? Math.round((usage.inputTokens / totalTokens) * 100) : 50;
+
+     const bodyHtml = data.body ? marked.parse(data.body) : '<p>No response.</p>';
 
     const card = document.createElement('div');
     card.className = 'result-card';
@@ -604,7 +609,7 @@
         Move: <span>${move || '—'}</span>
         ${pgn ? `&nbsp;·&nbsp; PGN: <span>${pgn.substring(0, 40)}${pgn.length > 40 ? '…' : ''}</span>` : ''}
       </div>
-      <div class="card-body">${body || '<p>No response body.</p>'}</div>
+      <div class="card-body">${bodyHtml}</div>
       <div class="token-bar">
         <div class="token-segment token-input" style="width:${inputPct}%; max-width: 200px;"></div>
         <div class="token-segment token-output" style="width:${100 - inputPct}%; max-width: 200px;"></div>

@@ -82,50 +82,83 @@ Please provide:
 	return prompt
 	
 def handler(event, context):
-	modelId = recommendedModels[event.get("model")]
-	prompt = buildPrompt( event )
+	print(event)
+	method = (
+		event.get("requestContext", {})
+			.get("http", {})
+            .get("method")
+    )
+	
+	if method == "OPTIONS":
+		return {
+    		"statusCode": 200,
+        	"headers": {
+            	"Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET,POST,OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type,Authorization"
+        	}
+        }
+
+	body = json.loads(event.get("body"))
+#	modelId = recommendedModels[body.get("model")]
+	modelId = body.get("model")
+	prompt = buildPrompt( body )
 	bedrock = boto3.client(
 		service_name="bedrock-runtime",
 		region_name="us-east-2"
 	)
 
-	response = bedrock.converse(
-		modelId=modelId,
-		system=[{"text":"""You are an expert chess analyst with grandmaster-level knowledge. 
-When analyzing a chess move or position, provide:
-- A clear evaluation of the move (tactical, strategic, or both)
-- Specific variations and continuations (use algebraic notation)
-- Positional themes and plans for both sides
-- Any tactical motifs, threats, or traps present
-- Historical or opening theory context where relevant
-Be thorough, specific, and use precise chess terminology.
-Format your response in clear sections with headers."""}],
-		messages=[
-			{"role": "user", "content": [{"text": prompt}]}
-		],
-		inferenceConfig={
-        	"maxTokens": 4096,        # max output tokens
-        	"temperature": 0.7,       # 0.0 - 1.0
-        	"topP": 0.9               # optional
+	try:
+		response = bedrock.converse(
+			modelId=modelId,
+			system=[{"text":"""You are an expert chess analyst with grandmaster-level knowledge. 
+	When analyzing a chess move or position, provide:
+	- A clear evaluation of the move (tactical, strategic, or both)
+	- Specific variations and continuations (use algebraic notation)
+	- Positional themes and plans for both sides
+	- Any tactical motifs, threats, or traps present
+	- Historical or opening theory context where relevant
+	Be thorough, specific, and use precise chess terminology.
+	Format your response in clear sections with headers."""}],
+			messages=[
+				{"role": "user", "content": [{"text": prompt}]}
+			],
+			inferenceConfig={
+				"maxTokens": 4096,        # max output tokens
+				"temperature": 0.7,       # 0.0 - 1.0
+				"topP": 0.9               # optional
+			}
+		)
+
+		stop_reason = response["stopReason"]
+		if stop_reason == "max_tokens":
+			logger.warning(f"Response truncated — hit maxTokens limit for {model_id}")
+		elif stop_reason == "content_filtered":
+			return error_response(400, "Response blocked by content filter", stop_reason)
+
+
+		print(response)
+		output_text = response["output"]["message"]["content"][0]["text"]
+		formatted_text = output_text.replace("\n", "<br>")
+
+
+		html = f"""<div class="response">{formatted_text}</div>"""
+		return {		
+			"statusCode": 200,
+			"headers": {
+				"Content-Type": "text/html"
+			},
+			"modelId": modelId,
+			"usage": response["usage"],
+			"metrics": response["metrics"],
+			"body": html
+		}
+	except Error as e:
+		print(e)
+		return {
+    	    "statusCode": status_code,
+        	"body": json.dumps(e)
     	}
-	)
-	
-	output_text = response["output"]["message"]["content"][0]["text"]
-	formatted_text = output_text.replace("\n", "<br>")
-
-
-	html = f"""<div class="response">{formatted_text}</div>"""
-	return {
-	
-		"statusCode": 200,
-		"headers": {
-			"Content-Type": "text/html"
-		},
-		"modelId": modelId,
-		"usage": response["usage"],
-		"metrics": response["metrics"],
-		"body": html
-	}
 
 if __name__ == "__main__":
 	try:

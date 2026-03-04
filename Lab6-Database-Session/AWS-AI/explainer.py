@@ -1,23 +1,11 @@
 
 import json
 import boto3
-import re
-
-def valid_simple_pgn(text):
-	pattern = re.compile(r'^(\d+\.\s\S{1,5}\s\S{1,5}\s){1,10}$')
-	return bool(pattern.fullmatch(text))
 
 def buildPrompt(event):
 	# Chekcks to prevent attacher fromusing this features for their own prompts
 	move = event.get("move")
-	if len(move) > 7:
-		return null
 	pgn = event.get("pgn")
-	if len(pgn) > 80:
-		return null
-#	if valid_simple_pgn(pgn) is False:
-#		return null
-		
 	prompt = f"Analyze the chess move {move} move after: {pgn}. Be as detailed and specific as possible."
 	prompt += """
 Please provide:

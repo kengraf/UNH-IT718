@@ -16,7 +16,7 @@ sed -i "s|YOUR_DB_ARN|${DB_ARN}|g" Lab6-dynamodb-policy.json
 ```
 aws iam create-role \
     --role-name Lab6-LambdaDynamoDBRole \
-    --assume-role-policy-document file://Lab6-trust-policy.json --query "Role.Arn" --output text`
+    --assume-role-policy-document file://Lab6-trust-policy.json --query "Role.Arn" --output text
 ROLE_ARN=` aws iam get-role --role-name Lab6-LambdaDynamoDBRole --query "Role.Arn" --output text`
 ```
 ### Deploy cloud function

@@ -8,7 +8,7 @@ Using the lessons learned in the previous labs, build out a complete serverless 
   - Generates a UUID
   - Stores the UUIC and OIDC provided email in DynamoDB
   - Redirects to /dashboard.html
-- /index.html displays: OIDC JWT contents, email, and UUID values.
+- /dashboard.html displays: OIDC JWT contents, email, and UUID values.
 
 ### Components
 | CF* | Function | Purpose | Notes |  

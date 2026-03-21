@@ -73,36 +73,23 @@ aws cloudtrail create-trail \
 
 ```
 
-aws cloudtrail put-event-selectors \
-  --trail-name alerts-trail \
-  --event-selectors '[
-    {
-      "ReadWriteType": "WriteOnly",
-      "IncludeManagementEvents": true
-    }
-  ]'
 
-aws cloudtrail start-logging --name iam-trail
+### Start the trail
+```
+aws cloudtrail start-logging --name alerts-trail
 
-# create sns topic
-aws sns create-topic --name api-event-topic
+```
 
-# subscribe (offline confirmation)
+# create sns topic and subscribe (offline confirmation)
+```
+TOPIC_ARN=`aws sns create-topic --name api-event-topic --output text`
 aws sns subscribe \
-  --topic-arn <TOPIC_ARN> \
+  --topic-arn $TOPIC_ARN \
   --protocol email \
-  --notification-endpoint you@example.com
+  --notification-endpoint kengraf57@gmail.com
 
-# create event-bridge rule
-aws events put-rule \
-  --name iam-write-rule \
-  --event-pattern '{
-    "source": ["aws.iam"],
-    "detail-type": ["AWS API Call via CloudTrail"],
-    "detail": {
-      "readOnly": [false]
-    }
-  }'
+```
+
 
 # Allow eventbridge to publish to sns
 aws sns set-topic-attributes \
@@ -116,6 +103,17 @@ aws sns set-topic-attributes \
       "Action": "sns:Publish",
       "Resource": "<TOPIC_ARN>"
     }]
+  }'
+
+# create event-bridge rule
+aws events put-rule \
+  --name iam-write-rule \
+  --event-pattern '{
+    "source": ["aws.iam"],
+    "detail-type": ["AWS API Call via CloudTrail"],
+    "detail": {
+      "readOnly": [false]
+    }
   }'
 
 ```

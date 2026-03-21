@@ -20,11 +20,16 @@ ACCOUNT_ID='788715698479'
 EMAIL='kengraf57@gmail.com'
 ```
 
-### Create SNS topic and subscribe
-> [!NOTE]
-> Offline confirmation, check spam folder
+### Create SNS topic
 ```
 TOPIC_ARN=`aws sns create-topic --name alerts-topic --output text`
+```
+
+### Subscribe
+> [!NOTE]
+> Offline confirmation, check spam folder
+> This is an instance where you need to give AWS a beat
+```
 aws sns subscribe \
   --topic-arn $TOPIC_ARN \
   --protocol email \

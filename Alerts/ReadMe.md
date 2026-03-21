@@ -16,8 +16,20 @@
 ```
 REGION='us-east-2'
 S3BUCKET='kengraf-alerts'  # Needs to be globally unique and lowercase
-ACCOUNT_ID='788715698479' 
+ACCOUNT_ID='788715698479'
+EMAIL='kengraf57@gmail.com'
 ```
+
+# Create SNS topic and subscribe (offline confirmation, check spam folder)
+```
+TOPIC_ARN=`aws sns create-topic --name alerts-topic --output text`
+aws sns subscribe \
+  --topic-arn $TOPIC_ARN \
+  --protocol email \
+  --notification-endpoint kengraf57@gmail.com
+
+```
+
 ### Create a bucket if you don't have one ready
 ```
 aws s3api create-bucket \
@@ -64,29 +76,13 @@ aws s3api put-bucket-policy \
 
 ```
 
-### Create trail
+### Create and start trail
 ```
 aws cloudtrail create-trail \
   --name alerts-trail \
   --s3-bucket-name $S3BUCKET \
   --is-multi-region-trail
-
-```
-
-
-### Start the trail
-```
 aws cloudtrail start-logging --name alerts-trail
-
-```
-
-# create sns topic and subscribe (offline confirmation)
-```
-TOPIC_ARN=`aws sns create-topic --name api-event-topic --output text`
-aws sns subscribe \
-  --topic-arn $TOPIC_ARN \
-  --protocol email \
-  --notification-endpoint kengraf57@gmail.com
 
 ```
 

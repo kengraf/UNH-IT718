@@ -15,7 +15,8 @@
 ### Varible definitons (pick yours)
 ```
 REGION='us-east-2'
-S3BUCKET='kengraf-alerts'  # Needs to be globally unique and lowercase```
+S3BUCKET='kengraf-alerts'  # Needs to be globally unique and lowercase
+
 ```
 ### Create a bucket if you don't have one ready
 ```

@@ -21,7 +21,7 @@ S3BUCKET='kengraf-alerts'  # Needs to be globally unique and lowercase
 ### Create a bucket if you don't have one ready
 ```
 aws s3api create-bucket \
-  --bucket $S3_BUCKET \
+  --bucket $S3BUCKET \
   --region $REGION \
   --create-bucket-configuration LocationConstraint=$REGION
 

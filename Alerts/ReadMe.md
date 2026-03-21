@@ -20,7 +20,7 @@ ACCOUNT_ID='788715698479'
 EMAIL='kengraf57@gmail.com'
 ```
 
-# Create SNS topic and subscribe
+### Create SNS topic and subscribe
 > [!NOTE]
 > Offline confirmation, check spam folder
 ```
@@ -88,7 +88,7 @@ aws cloudtrail start-logging --name alerts-trail
 
 ```
 
-# Allow eventbridge to publish to sns
+### Allow eventbridge to publish to sns
 ```
 aws sns set-topic-attributes \
   --topic-arn $TOPIC_ARN \
@@ -103,9 +103,9 @@ aws sns set-topic-attributes \
     }]
   }'
 ```
-# ROOT ACCOUNT USAGE (critical)
+### ROOT ACCOUNT USAGE (critical)
 ```
-NAME='root-usage"
+NAME='root-usage'
 aws events put-rule \
   --name $NAME \
   --event-pattern '{

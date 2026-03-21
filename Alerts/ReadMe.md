@@ -28,7 +28,7 @@ TOPIC_ARN=`aws sns create-topic --name alerts-topic --output text`
 aws sns subscribe \
   --topic-arn $TOPIC_ARN \
   --protocol email \
-  --notification-endpoint k$EMAIL
+  --notification-endpoint $EMAIL
 
 ```
 
@@ -88,10 +88,10 @@ aws cloudtrail start-logging --name alerts-trail
 
 ```
 
-
 # Allow eventbridge to publish to sns
+```
 aws sns set-topic-attributes \
-  --topic-arn <TOPIC_ARN> \
+  --topic-arn $TOPIC_ARN \
   --attribute-name Policy \
   --attribute-value '{
     "Version": "2012-10-17",
@@ -99,9 +99,10 @@ aws sns set-topic-attributes \
       "Effect": "Allow",
       "Principal": { "Service": "events.amazonaws.com" },
       "Action": "sns:Publish",
-      "Resource": "<TOPIC_ARN>"
+      "Resource": "$TOPIC_ARN"
     }]
   }'
+```
 
 # create event-bridge rule
 aws events put-rule \

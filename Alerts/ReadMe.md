@@ -14,7 +14,7 @@
 
 ### Varible definitons (pick yours)
 ```
-REGION='us-east-2'
+REGION='us-east-1'  # FYI IAM events goto CloudTail in us-east-1
 S3BUCKET='kengraf-alerts'  # Needs to be globally unique and lowercase
 ACCOUNT_ID='788715698479'
 EMAIL='kengraf57@gmail.com'
@@ -114,6 +114,99 @@ aws events put-rule \
       "readOnly": [false]
     }
   }'
+1. ROOT ACCOUNT USAGE (critical)
+aws events put-rule \
+  --name security-root-usage \
+  --event-pattern '{
+    "detail-type": ["AWS Console Sign In via CloudTrail"],
+    "detail": {
+      "userIdentity": {
+        "type": ["Root"]
+      }
+    }
+  }'
+2. IAM WRITE CHANGES (core coverage)
+aws events put-rule \
+  --name security-iam-writes \
+  --event-pattern '{
+    "source": ["aws.iam"],
+    "detail-type": ["AWS API Call via CloudTrail"],
+    "detail": {
+      "readOnly": [false]
+    }
+  }'
+
+3. ACCESS KEY CREATION (high-risk)
+aws events put-rule \
+  --name security-access-keys \
+  --event-pattern '{
+    "detail-type": ["AWS API Call via CloudTrail"],
+    "detail": {
+      "eventSource": ["iam.amazonaws.com"],
+      "eventName": ["CreateAccessKey"]
+    }
+  }'
+
+4. POLICY / PRIVILEGE ESCALATION
+aws events put-rule \
+  --name security-priv-esc \
+  --event-pattern '{
+    "detail-type": ["AWS API Call via CloudTrail"],
+    "detail": {
+      "eventSource": ["iam.amazonaws.com"],
+      "eventName": [
+        "AttachRolePolicy",
+        "PutUserPolicy",
+        "PutRolePolicy",
+        "AttachUserPolicy",
+        "AddUserToGroup"
+      ]
+    }
+  }'
+
+5. CLOUDTRAIL TAMPERING
+aws events put-rule \
+  --name security-cloudtrail-tamper \
+  --event-pattern '{
+    "source": ["aws.cloudtrail"],
+    "detail-type": ["AWS API Call via CloudTrail"],
+    "detail": {
+      "eventName": [
+        "StopLogging",
+        "DeleteTrail",
+        "UpdateTrail"
+      ]
+    }
+  }'
+
+6. CONSOLE LOGIN FAILURES
+aws events put-rule \
+  --name security-console-failures \
+  --event-pattern '{
+    "detail-type": ["AWS Console Sign In via CloudTrail"],
+    "detail": {
+      "responseElements": {
+        "ConsoleLogin": ["Failure"]
+      }
+    }
+  }'
+
+7. S3 PUBLIC ACCESS CHANGES
+aws events put-rule \
+  --name security-s3-public \
+  --event-pattern '{
+    "source": ["aws.s3"],
+    "detail-type": ["AWS API Call via CloudTrail"],
+    "detail": {
+      "eventName": [
+        "PutBucketAcl",
+        "PutBucketPolicy",
+        "PutPublicAccessBlock"
+      ]
+    }
+  }'
+
+
 
 ```
 RULE_NAME='root-usage'

@@ -58,10 +58,12 @@ EOF
 ```
 
 ### Create trail
+```
 aws cloudtrail create-trail \
   --name alerts-trail \
   --s3-bucket-name $S3BUCKET \
   --is-multi-region-trail
+```
 
 aws cloudtrail put-event-selectors \
   --trail-name alerts-trail \

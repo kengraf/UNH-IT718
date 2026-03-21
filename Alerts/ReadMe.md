@@ -16,7 +16,7 @@
 ```
 REGION='us-east-2'
 S3BUCKET='kengraf-alerts'  # Needs to be globally unique and lowercase
-
+ACCOUNT_ID='788715698479' 
 ```
 ### Create a bucket if you don't have one ready
 ```
@@ -26,6 +26,58 @@ aws s3api create-bucket \
   --create-bucket-configuration LocationConstraint=$REGION
 
 ```
+### Set bucket policy to allow CloudTrail writes
+
+### Create trail
+aws cloudtrail create-trail \
+  --name alerts-trail \
+  --s3-bucket-name $S3BUCKET \
+  --is-multi-region-trail
+
+aws cloudtrail put-event-selectors \
+  --trail-name alerts-trail \
+  --event-selectors '[
+    {
+      "ReadWriteType": "WriteOnly",
+      "IncludeManagementEvents": true
+    }
+  ]'
+
+aws cloudtrail start-logging --name iam-trail
+
+# create sns topic
+aws sns create-topic --name api-event-topic
+
+# subscribe (offline confirmation)
+aws sns subscribe \
+  --topic-arn <TOPIC_ARN> \
+  --protocol email \
+  --notification-endpoint you@example.com
+
+# create event-bridge rule
+aws events put-rule \
+  --name iam-write-rule \
+  --event-pattern '{
+    "source": ["aws.iam"],
+    "detail-type": ["AWS API Call via CloudTrail"],
+    "detail": {
+      "readOnly": [false]
+    }
+  }'
+
+# Allow eventbridge to publish to sns
+aws sns set-topic-attributes \
+  --topic-arn <TOPIC_ARN> \
+  --attribute-name Policy \
+  --attribute-value '{
+    "Version": "2012-10-17",
+    "Statement": [{
+      "Effect": "Allow",
+      "Principal": { "Service": "events.amazonaws.com" },
+      "Action": "sns:Publish",
+      "Resource": "<TOPIC_ARN>"
+    }]
+  }'
 
 ```
 RULE_NAME='root-usage'

@@ -108,7 +108,8 @@ aws sns set-topic-attributes \
     }]
   }'
 ```
-### ROOT ACCOUNT USAGE (critical)
+## Seven great opex/security rules
+#### 1. Root account usage (critical)
 ```
 NAME='root-usage'
 aws events put-rule \
@@ -125,9 +126,11 @@ aws events put-targets --rule $NAME \
   --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
 ```
 
-2. IAM WRITE CHANGES (core coverage)
+#### 2. IAM changes (core coverage)
+```
+NAME="iam-change"
 aws events put-rule \
-  --name security-iam-writes \
+  --name $NAME \
   --event-pattern '{
     "source": ["aws.iam"],
     "detail-type": ["AWS API Call via CloudTrail"],
@@ -135,8 +138,13 @@ aws events put-rule \
       "readOnly": [false]
     }
   }'
-
-3. ACCESS KEY CREATION (high-risk)
+aws events put-targets --rule $NAME \
+  --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
+```
+  
+#### 3. ACCESS KEY CREATION (high-risk)
+```
+NAME="new-key"
 aws events put-rule \
   --name security-access-keys \
   --event-pattern '{
@@ -146,8 +154,13 @@ aws events put-rule \
       "eventName": ["CreateAccessKey"]
     }
   }'
-
-4. POLICY / PRIVILEGE ESCALATION
+aws events put-targets --rule $NAME \
+  --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
+```
+   
+#### 4. POLICY / PRIVILEGE ESCALATION
+```
+NAME="policy-change"
 aws events put-rule \
   --name security-priv-esc \
   --event-pattern '{
@@ -163,8 +176,13 @@ aws events put-rule \
       ]
     }
   }'
-
-5. CLOUDTRAIL TAMPERING
+aws events put-targets --rule $NAME \
+  --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
+```
+   
+#### 5. CLOUDTRAIL TAMPERING
+```
+NAME="log-tampering"
 aws events put-rule \
   --name security-cloudtrail-tamper \
   --event-pattern '{
@@ -178,8 +196,13 @@ aws events put-rule \
       ]
     }
   }'
-
-6. CONSOLE LOGIN FAILURES
+aws events put-targets --rule $NAME \
+  --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
+```
+   
+#### 6. CONSOLE LOGIN FAILURES
+```
+NAME="console-attacks"
 aws events put-rule \
   --name security-console-failures \
   --event-pattern '{
@@ -190,8 +213,13 @@ aws events put-rule \
       }
     }
   }'
-
-7. S3 PUBLIC ACCESS CHANGES
+aws events put-targets --rule $NAME \
+  --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
+```
+   
+### 7. S3 PUBLIC ACCESS CHANGES
+```
+NAME="public-s3"
 aws events put-rule \
   --name security-s3-public \
   --event-pattern '{
@@ -205,12 +233,6 @@ aws events put-rule \
       ]
     }
   }'
-
-
-
-```
-RULE_NAME='root-usage'
-aws events put-targets \
-  --rule <RULE_NAME> \
-  --targets "Id"="1","Arn"="<TOPIC_ARN>"
-```
+aws events put-targets --rule $NAME \
+  --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
+```  

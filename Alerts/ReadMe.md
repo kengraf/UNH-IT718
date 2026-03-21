@@ -37,14 +37,14 @@ cat <<EOF > cloudtrail-bucket-policy.json
       "Effect": "Allow",
       "Principal": { "Service": "cloudtrail.amazonaws.com" },
       "Action": "s3:GetBucketAcl",
-      "Resource": "arn:aws:s3:::$(S3BUCKET)"
+      "Resource": "arn:aws:s3:::${S3BUCKET}"
     },
     {
       "Sid": "AWSCloudTrailWrite",
       "Effect": "Allow",
       "Principal": { "Service": "cloudtrail.amazonaws.com" },
       "Action": "s3:PutObject",
-      "Resource": "arn:aws:s3:::$(S3BUCKET)/AWSLogs/$(ACCOUNT_ID)/*",
+      "Resource": "arn:aws:s3:::${S3BUCKET}/AWSLogs/${ACCOUNT_ID}/*",
       "Condition": {
         "StringEquals": {
           "s3:x-amz-acl": "bucket-owner-full-control"

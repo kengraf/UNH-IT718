@@ -103,20 +103,11 @@ aws sns set-topic-attributes \
     }]
   }'
 ```
-
-# create event-bridge rule
+# ROOT ACCOUNT USAGE (critical)
+```
+NAME='root-usage"
 aws events put-rule \
-  --name iam-write-rule \
-  --event-pattern '{
-    "source": ["aws.iam"],
-    "detail-type": ["AWS API Call via CloudTrail"],
-    "detail": {
-      "readOnly": [false]
-    }
-  }'
-1. ROOT ACCOUNT USAGE (critical)
-aws events put-rule \
-  --name security-root-usage \
+  --name $NAME \
   --event-pattern '{
     "detail-type": ["AWS Console Sign In via CloudTrail"],
     "detail": {
@@ -125,6 +116,10 @@ aws events put-rule \
       }
     }
   }'
+aws events put-targets --rule $NAME \
+  --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
+```
+
 2. IAM WRITE CHANGES (core coverage)
 aws events put-rule \
   --name security-iam-writes \

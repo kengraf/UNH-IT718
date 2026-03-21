@@ -56,6 +56,13 @@ cat <<EOF > cloudtrail-bucket-policy.json
 EOF
 
 ```
+### Apply policy
+```
+aws s3api put-bucket-policy \
+  --bucket $S3BUCKET \
+  --policy file://cloudtrail-bucket-policy.json
+
+```
 
 ### Create trail
 ```
@@ -63,6 +70,7 @@ aws cloudtrail create-trail \
   --name alerts-trail \
   --s3-bucket-name $S3BUCKET \
   --is-multi-region-trail
+
 ```
 
 aws cloudtrail put-event-selectors \

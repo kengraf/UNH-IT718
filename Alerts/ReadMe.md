@@ -41,8 +41,7 @@ aws sns subscribe \
 ```
 aws s3api create-bucket \
   --bucket $S3BUCKET \
-  --region $REGION \
-  --create-bucket-configuration LocationConstraint=$REGION
+  --region $REGION
 
 ```
 ### Set bucket policy to allow CloudTrail writes

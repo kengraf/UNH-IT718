@@ -27,8 +27,8 @@ TOPIC_ARN=`aws sns create-topic --name alerts-topic --output text`
 
 ### Subscribe
 > [!NOTE]
-> Offline confirmation, check spam folder
-> This is an instance where you need to give AWS a beat
+> Email confirmation, check spam folder.  
+> This is an instance where you need a few seconds between commands.
 ```
 aws sns subscribe \
   --topic-arn $TOPIC_ARN \

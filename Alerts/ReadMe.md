@@ -242,3 +242,56 @@ aws events put-rule \
 aws events put-targets --rule $NAME \
   --targets "Id"=$NAME,"Arn"="$TOPIC_ARN"
 ```  
+### CLI commands to fire events
+```
+echo "1. ROOT ACCOUNT USAGE"
+echo "⚠️ No CLI for this (must use root login)"
+
+echo "🔐 2. IAM WRITE CHANGES"
+USER=test-iam-$(date +%s)
+aws iam create-user --user-name $USER
+
+echo "🔐 3. ACCESS KEY CREATION"
+USER_KEY=test-key-$(date +%s)
+aws iam create-user --user-name $USER_KEY
+KEY_ID=`aws iam create-access-key --user-name $USER_KEY`
+
+echo "🔐 4. PRIVILEGE ESCALATION (policy attach)"
+USER_PRIV=test-priv-$(date +%s)
+aws iam create-user --user-name $USER_PRIV
+aws iam attach-user-policy \
+  --user-name $USER_PRIV \
+  --policy-arn arn:aws:iam::aws:policy/ReadOnlyAccess
+
+echo "🔐 5. CLOUDTRAIL TAMPERING 🚨"
+echo "⚠️ Safe test: use a dummy trail, NOT your real one"
+aws cloudtrail create-trail \
+  --name test-trail \
+  --s3-bucket-name $S3BUCKET
+aws cloudtrail stop-logging --name test-trail
+
+echo "🔐 6. CONSOLE LOGIN FAILURE"
+echo "No CLI. Nust simulate bad login on console"
+
+echo "🔐 7. S3 PUBLIC ACCESS CHANGES"
+TEST_BUCKET=it718-test-public-$(date +%s)
+aws s3api create-bucket \
+  --bucket $BUCKET \
+  --region $REGION
+aws s3api put-bucket-acl \
+  --bucket $BUCKET \
+  --acl public-read
+```
+
+### Clenup test resources
+```
+aws iam delete-user --user-name $USER
+aws iam delete-access-key --user-name $USER_KEY --access-key-id $KEY_ID
+aws iam delete-user --user-name $USER_KEY
+aws iam detach-user-policy \
+  --user-name $USER_PRIV \
+  --policy-arn arn:aws:iam::aws:policy/ReadOnlyAccess
+aws iam delete-user --user-name $USER_PRIV
+aws cloudtrail delete-trail --name test-trail
+aws s3api delete-bucket --bucket $TEST_BUCKET
+```

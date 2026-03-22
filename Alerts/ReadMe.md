@@ -103,7 +103,7 @@ aws sns set-topic-attributes \
       "Effect": "Allow",
       "Principal": { "Service": "events.amazonaws.com" },
       "Action": "sns:Publish",
-      "Resource": "$TOPIC_ARN"
+      "Resource": $TOPIC_ARN
     }]
   }'
 ```

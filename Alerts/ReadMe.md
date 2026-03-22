@@ -112,6 +112,7 @@ aws sns set-topic-attributes \
 ```
 NAME='root-usage'
 aws events put-rule \
+  --region us-east-1 \
   --name $NAME \
   --event-pattern '{
     "detail-type": ["AWS Console Sign In via CloudTrail"],
@@ -129,6 +130,7 @@ aws events put-targets --rule $NAME \
 ```
 NAME="iam-change"
 aws events put-rule \
+  --region us-east-1 \
   --name $NAME \
   --event-pattern '{
     "source": ["aws.iam"],
@@ -145,7 +147,8 @@ aws events put-targets --rule $NAME \
 ```
 NAME="new-key"
 aws events put-rule \
-  --name security-access-keys \
+  --name $NAME \
+  --region us-east-1 \
   --event-pattern '{
     "detail-type": ["AWS API Call via CloudTrail"],
     "detail": {
@@ -161,7 +164,8 @@ aws events put-targets --rule $NAME \
 ```
 NAME="policy-change"
 aws events put-rule \
-  --name security-priv-esc \
+  --name $NAME \
+  --region us-east-1 \
   --event-pattern '{
     "detail-type": ["AWS API Call via CloudTrail"],
     "detail": {
@@ -183,7 +187,8 @@ aws events put-targets --rule $NAME \
 ```
 NAME="log-tampering"
 aws events put-rule \
-  --name security-cloudtrail-tamper \
+  --name $NAME \
+  --region us-east-1 \
   --event-pattern '{
     "source": ["aws.cloudtrail"],
     "detail-type": ["AWS API Call via CloudTrail"],
@@ -203,7 +208,8 @@ aws events put-targets --rule $NAME \
 ```
 NAME="console-attacks"
 aws events put-rule \
-  --name security-console-failures \
+  --name $NAME \
+  --region us-east-1 \
   --event-pattern '{
     "detail-type": ["AWS Console Sign In via CloudTrail"],
     "detail": {
@@ -220,7 +226,8 @@ aws events put-targets --rule $NAME \
 ```
 NAME="public-s3"
 aws events put-rule \
-  --name security-s3-public \
+  --name $NAME \
+  --region us-east-1 \
   --event-pattern '{
     "source": ["aws.s3"],
     "detail-type": ["AWS API Call via CloudTrail"],

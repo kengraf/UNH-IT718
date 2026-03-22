@@ -278,12 +278,13 @@ TEST_BUCKET=it718-test-public-$(date +%s)
 aws s3api create-bucket \
   --bucket $BUCKET \
   --region $REGION
+echo "The ACL will fail, but the attempt is logged and will fire event
 aws s3api put-bucket-acl \
   --bucket $BUCKET \
   --acl public-read
 ```
 
-### Clenup test resources
+### Cleanup test resources
 ```
 aws iam delete-user --user-name $USER
 aws iam delete-access-key --user-name $USER_KEY --access-key-id $KEY_ID

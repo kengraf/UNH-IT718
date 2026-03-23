@@ -16,7 +16,7 @@
 ```
 REGION='us-east-1'  # FYI IAM events goto CloudTail in us-east-1
 S3BUCKET='kengraf-alerts'  # Needs to be globally unique and lowercase
-ACCOUNT_ID='788715698479'
+ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
 EMAIL='kengraf57@gmail.com'
 ```
 

@@ -44,6 +44,7 @@ aws s3api put-bucket-website --bucket $YOUR_BUCKET_NAME --website-configuration 
 ### Set AWS service access policy
 Use the policy.json in this directory. Replace the $YOUR_BUCKET_NAME placeholder with you bucket.
 ```
+sed -i "s/YOUR_BUCKET_NAME/${YOUR_BUCKET_NAME}/g" policy.json
 aws s3api put-bucket-policy --bucket $YOUR_BUCKET_NAME --policy file://policy.json
 ```
 ### Upload content from current directory

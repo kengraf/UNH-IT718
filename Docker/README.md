@@ -1,3 +1,16 @@
+# Runnign containers in AWS
+
+### Examples
+Run ngnix
+```
+docker run --rm -p 88:80 nginx
+```
+
+Run the Juice Shop hacking exercise 
+```
+docker run --rm -p 3000:3000 bkimminich/juice-shop
+```
+
 #  Create a container that run an iPython Docker lesson
 
 ### 1. Buid the Doker image

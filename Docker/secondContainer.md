@@ -25,7 +25,7 @@ apt-get update
 apt-get install -y figlet
 figlet "hello docker"
 ```
-You should see the words “hello docker” printed out in large ascii characters on the screen. Go ahead and exit from this container
+You should see the words `hello docker` printed out in large ascii characters on the screen. Go ahead and exit from this container
 
 ```
 exit
@@ -51,9 +51,9 @@ docker image ls
 ```
 You should see something like this:
 
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+`REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 <none>              <none>              a104f9ae9c37        46 seconds ago      160MB
-ubuntu              latest              14f60031763d        4 days ago          120MB
+ubuntu              latest              14f60031763d        4 days ago          120MB`
 Note that the image we pulled down in the first step (ubuntu) is listed here along with our own custom image. Except our custom image has no information in the REPOSITORY or TAG columns, which would make it tough to identify exactly what was in this container if we wanted to share amongst multiple team members.
 
 Adding this information to an image is known as tagging an image. From the previous command, get the ID of the newly created image and tag it so it’s named ourfiglet:
@@ -66,9 +66,9 @@ docker image ls
 ```
 Now we have the more friendly name “ourfiglet” that we can use to identify our image.
 
-REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
+`REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 ourfiglet           latest              a104f9ae9c37        5 minutes ago       160MB
-ubuntu              latest              14f60031763d        4 days ago          120MB
+ubuntu              latest              14f60031763d        4 days ago          120MB`
 Here is a graphical view of what we just completed: commit container to image
 
 Now we will run a container based on the newly created ourfiglet image:
@@ -76,11 +76,11 @@ Now we will run a container based on the newly created ourfiglet image:
 docker container run ourfiglet figlet hello
 As the figlet package is present in our ourfiglet image, the command returns the following output:
 
- _          _ _
+` _          _ _
 | |__   ___| | | ___
 | '_ \ / _ \ | |/ _ \
 | | | |  __/ | | (_) |
-|_| |_|\___|_|_|\___/
+|_| |_|\___|_|_|\___/`
 
 This example shows that we can create a container, add all the libraries and binaries in it and then commit it in order to create an image. We can then use that image just as we would for images pulled down from the Docker Store. We still have a slight issue in that our image is only stored locally. To share the image we would want to push the image to a registry somewhere. This is beyond the scope of this lab (and you should not enter any personal login information in these labs) but you can get a free Docker ID, run these labs, and push to the Docker Community Hub from your own system using Docker for Windows or Docker for Mac if you want to try this out.
 

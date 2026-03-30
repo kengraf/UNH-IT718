@@ -68,19 +68,21 @@ Now we have the more friendly name “ourfiglet” that we can use to identify o
 
 `REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
 ourfiglet           latest              a104f9ae9c37        5 minutes ago       160MB
-ubuntu              latest              14f60031763d        4 days ago          120MB`
+ubuntu              latest              14f60031763d        4 days ago          120MB`  
 Here is a graphical view of what we just completed: commit container to image
 
 Now we will run a container based on the newly created ourfiglet image:
 
+```
 docker container run ourfiglet figlet hello
+```
 As the figlet package is present in our ourfiglet image, the command returns the following output:
 
-` _          _ _
-| |__   ___| | | ___
-| '_ \ / _ \ | |/ _ \
-| | | |  __/ | | (_) |
-|_| |_|\___|_|_|\___/`
+` _          _ _`
+`| |__   ___| | | ___`
+`| '_ \ / _ \ | |/ _ \`
+`| | | |  __/ | | (_) |`
+`|_| |_|\___|_|_|\___/`  
 
 This example shows that we can create a container, add all the libraries and binaries in it and then commit it in order to create an image. We can then use that image just as we would for images pulled down from the Docker Store. We still have a slight issue in that our image is only stored locally. To share the image we would want to push the image to a registry somewhere. This is beyond the scope of this lab (and you should not enter any personal login information in these labs) but you can get a free Docker ID, run these labs, and push to the Docker Community Hub from your own system using Docker for Windows or Docker for Mac if you want to try this out.
 
@@ -133,14 +135,14 @@ docker container run hello:v0.1
 ```
 You should then have an output similar to the following one (the ID will be different though).
 
-hello from 92d79b6de29f
+`hello from 92d79b6de29f`  
 What just happened? We created two files: our application code (index.js) is a simple bit of javascript code that prints out a message. And the Dockerfile is the instructions for Docker engine to create our custom container. This Dockerfile does the following:
 
-Specifies a base image to pull FROM - the alpine image we used in earlier labs.
-Then it RUNs two commands (apk update and apk add) inside that container which installs the Node.js server.
-Then we told it to COPY files from our working directory in to the container. The only file we have right now is our index.js.
-Next we specify the WORKDIR - the directory the container should use when it starts up
-And finally, we gave our container a command (CMD) to run when the container starts.
+- Specifies a base image to pull FROM - the alpine image we used in earlier labs.
+- Then it RUNs two commands (apk update and apk add) inside that container which installs the Node.js server.
+- Then we told it to COPY files from our working directory in to the container. The only file we have right now is our index.js.
+- Next we specify the WORKDIR - the directory the container should use when it starts up
+- And finally, we gave our container a command (CMD) to run when the container starts.  
 Recall that in previous labs we put commands like echo "hello world" on the command line. With a Dockerfile we can specify precise commands to run for everyone who uses this container. Other users do not have to build the container themselves once you push your container up to a repository (which we will cover later) or even know what commands are used. The Dockerfile allows us to specify how to build a container so that we can repeat those steps precisely everytime and we can specify what the container should do when it runs. There are actually multiple methods for specifying the commands and accepting parameters a container will use, but for now it is enough to know that you have the tools to create some pretty powerful containers.
 
 Image layers
@@ -165,7 +167,7 @@ docker image build -t hello:v0.2 .
 ```
 You should see output similar to this:
 
-Sending build context to Docker daemon  86.15MB
+`Sending build context to Docker daemon  86.15MB
 Step 1/5 : FROM alpine
  ---> 7328f6f8b418
 Step 2/5 : RUN apk update && apk add nodejs
@@ -182,7 +184,7 @@ Step 5/5 : CMD node index.js
  ---> e536b9dadd2f
 Removing intermediate container e079fb6000a3
 Successfully built e536b9dadd2f
-Successfully tagged hello:v0.2
+Successfully tagged hello:v0.2`  
 Notice something interesting in the build steps this time. In the output it goes through the same five steps, but notice that in some steps it says Using cache.
 
 layers and cache

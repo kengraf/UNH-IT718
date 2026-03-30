@@ -36,7 +36,7 @@ docker build -t ipython-notebook .
 ```
 ### 2. Run the container
 ```
-docker run -p 8888:80 -v $(pwd):/app ipython-notebook
+docker run -p 8888:8888 -v $(pwd):/app ipython-notebook
 ```
 What this does:
 -p 8888:80 → maps container port to your machine

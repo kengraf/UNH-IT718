@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hpa-example
+spec:
+  selector:
+    matchLabels:
+      run: hpa-example
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: hpa-example
+    spec:
+      containers:
+      - name: hpa-example
+        image: billiardyoda/hpa-example:v1
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 200m
+          requests:
+            cpu: 100m
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hpa-example
+  labels:
+    run: hpa-example
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 8090
+  selector:
+    run: hpa-example
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: hpa-example
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: hpa-example
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50

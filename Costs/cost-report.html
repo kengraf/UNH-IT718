@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AWS Weekly Cost Report</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0c10; --surface: #111520; --surface2: #161c2a; --border: #1e2a40;
+    --accent: #f0a500; --accent2: #00c9a7; --accent3: #e0445a;
+    --text: #dce4f0; --muted: #5a6a85;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; padding: 32px 24px 60px; }
+
+  header { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+  .header-left h1 { font-family: var(--mono); font-size: clamp(1.3rem,3vw,1.9rem); font-weight: 600; letter-spacing: -0.02em; color: #fff; }
+  .header-left h1 span { color: var(--accent); }
+  .header-left p { margin-top: 6px; font-size: 0.8rem; color: var(--muted); font-family: var(--mono); }
+  .btns { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .btn { border: none; border-radius: 4px; padding: 10px 18px; font-family: var(--mono); font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: opacity 0.15s; white-space: nowrap; }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-ghost { background: var(--surface); color: var(--accent); border: 1px solid var(--accent); }
+  .btn:hover { opacity: 0.82; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fit,minmax(170px,1fr)); gap: 16px; margin-bottom: 36px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 18px 20px; position: relative; overflow: hidden; }
+  .card::before { content:''; position:absolute; top:0;left:0;right:0; height:2px; background:var(--accent); }
+  .card.green::before { background: var(--accent2); }
+  .card.red::before   { background: var(--accent3); }
+  .card label { display:block; font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:10px; }
+  .card .value { font-family:var(--mono); font-size:1.5rem; font-weight:600; color:#fff; }
+  .card .sub   { font-size:0.7rem; color:var(--muted); margin-top:4px; font-family:var(--mono); }
+
+  .section-title { font-family:var(--mono); font-size:0.68rem; text-transform:uppercase; letter-spacing:0.12em; color:var(--muted); margin-bottom:12px; }
+
+  .chart-wrap { background:var(--surface); border:1px solid var(--border); border-radius:6px; padding:20px; margin-bottom:36px; overflow-x:auto; }
+  #daily-chart { display:flex; align-items:flex-end; gap:8px; height:160px; min-width:360px; }
+  .bar-group { flex:1; display:flex; flex-direction:column; align-items:center; gap:5px; height:100%; justify-content:flex-end; }
+  .bar-group .bar-amt  { font-family:var(--mono); font-size:0.6rem; color:var(--accent); }
+  .bar-group .bar      { width:100%; max-width:60px; background:var(--accent); border-radius:3px 3px 0 0; min-height:2px; }
+  .bar-group .bar-date { font-family:var(--mono); font-size:0.6rem; color:var(--muted); text-align:center; }
+
+  .toolbar { display:flex; gap:12px; margin-bottom:12px; flex-wrap:wrap; align-items:center; }
+  .search-box { background:var(--surface); border:1px solid var(--border); border-radius:4px; padding:8px 14px; font-family:var(--mono); font-size:0.78rem; color:var(--text); width:260px; outline:none; transition:border-color 0.2s; }
+  .search-box::placeholder { color:var(--muted); }
+  .search-box:focus { border-color:var(--accent); }
+  .badge { font-family:var(--mono); font-size:0.65rem; background:var(--surface2); border:1px solid var(--border); border-radius:4px; padding:6px 12px; color:var(--muted); }
+
+  .table-wrap { background:var(--surface); border:1px solid var(--border); border-radius:6px; overflow:hidden; margin-bottom:36px; overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:0.81rem; }
+  thead tr { background:var(--surface2); border-bottom:1px solid var(--border); }
+  th { padding:11px 14px; text-align:left; font-family:var(--mono); font-size:0.65rem; text-transform:uppercase; letter-spacing:0.1em; color:var(--muted); font-weight:500; cursor:pointer; user-select:none; white-space:nowrap; }
+  th:hover { color:var(--text); }
+  th.sorted { color:var(--accent); }
+  td { padding:10px 14px; border-bottom:1px solid var(--border); vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr.svc-row:hover td { background:rgba(255,255,255,0.025); cursor:pointer; }
+  tr.sub-row td { background:rgba(0,0,0,0.25); padding:8px 14px 8px 40px; border-bottom:1px solid rgba(30,42,64,0.5); }
+  tr.sub-row:last-child td { border-bottom:none; }
+  .cost-cell { font-family:var(--mono); font-size:0.8rem; text-align:right; }
+  .bar-inline { display:flex; align-items:center; gap:8px; }
+  .bar-inline-track { flex:1; height:3px; background:var(--border); border-radius:2px; overflow:hidden; min-width:60px; }
+  .bar-inline-fill  { height:100%; background:var(--accent); border-radius:2px; }
+  .expand-icon { font-size:0.6rem; color:var(--muted); margin-right:8px; display:inline-block; transition:transform 0.15s; }
+  .expand-icon.open { transform:rotate(90deg); color:var(--accent); }
+  .svc-name { color:var(--text); font-weight:500; }
+  .sub-name { font-size:0.75rem; color:var(--muted); font-family:var(--mono); }
+
+  .empty { text-align:center; padding:50px 24px; color:var(--muted); font-family:var(--mono); font-size:0.8rem; line-height:2; }
+  .empty strong { color:var(--accent); display:block; font-size:0.95rem; margin-bottom:8px; }
+  footer { font-family:var(--mono); font-size:0.65rem; color:var(--muted); text-align:center; margin-top:48px; }
+  ::-webkit-scrollbar { width:6px; height:6px; }
+  ::-webkit-scrollbar-track { background:var(--bg); }
+  ::-webkit-scrollbar-thumb { background:var(--border); border-radius:3px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>AWS Cost <span>&</span> Usage Report</h1>
+    <p id="period-label">Load your weekly-cost.json to begin</p>
+  </div>
+  <div class="btns">
+    <input type="file" id="file-input" accept=".json" style="display:none">
+    <button class="btn btn-primary" onclick="document.getElementById('file-input').click()">↑ Load weekly-cost.json</button>
+  </div>
+</header>
+
+<div class="cards">
+  <div class="card"><label>Total Cost</label><div class="value" id="cv-total">—</div><div class="sub" id="cs-total">all services</div></div>
+  <div class="card green"><label>Days Covered</label><div class="value" id="cv-days">—</div><div class="sub" id="cs-days">reporting period</div></div>
+  <div class="card"><label>Daily Average</label><div class="value" id="cv-avg">—</div><div class="sub">per day</div></div>
+  <div class="card red"><label>Top Service</label><div class="value" style="font-size:1rem;line-height:1.3" id="cv-top">—</div><div class="sub" id="cs-top">highest spend</div></div>
+  <div class="card" id="card-dim" style="display:none"><label>Grouping</label><div class="value" style="font-size:0.85rem;line-height:1.4" id="cv-dim">—</div><div class="sub" id="cs-dim"></div></div>
+</div>
+
+<div class="section-title">Daily Total Spend</div>
+<div class="chart-wrap"><div id="daily-chart"><div class="empty" style="width:100%"><strong>No data</strong>Load your JSON above</div></div></div>
+
+<div class="section-title">Service Breakdown — period total</div>
+<div class="toolbar">
+  <input class="search-box" type="text" id="search" placeholder="Filter services…" oninput="renderTable()">
+  <span class="badge" id="svc-count">0 services</span>
+  <span class="badge" id="hint-badge" style="display:none">↳ click a row to expand usage types</span>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr>
+      <th onclick="sortBy('name')" id="th-name">Service</th>
+      <th id="th-detail" style="display:none;color:var(--muted);cursor:default">Usage Type / Detail</th>
+      <th onclick="sortBy('cost')" id="th-cost" class="sorted" style="text-align:right">Total Cost ▼</th>
+      <th style="min-width:160px">Share</th>
+    </tr></thead>
+    <tbody id="svc-body">
+      <tr><td colspan="4"><div class="empty"><strong>No data loaded</strong>Use the buttons above</div></td></tr>
+    </tbody>
+  </table>
+</div>
+
+<footer id="ft">AWS Cost Explorer · UnblendedCost · Daily Granularity</footer>
+
+<script>
+let S = {};
+let sortKey='cost', sortDir=-1, expanded=new Set();
+
+document.getElementById('file-input').addEventListener('change', e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{ try{ ingest(JSON.parse(ev.target.result)); }catch(err){ alert('JSON parse error: '+err.message); } };
+  r.readAsText(f);
+});
+
+function fmt(n,size=2){ return '$'+n.toFixed(size); }
+function shortDate(d){ const [,m,dy]=d.split('-'); return m+'/'+dy; }
+
+function ingest(json){
+  const results=json.ResultsByTime||[];
+  if(!results.length){ alert('No ResultsByTime found.'); return; }
+
+  const sampleG=results[0].Groups||[];
+  const nKeys=sampleG.length ? sampleG[0].Keys.length : 1;
+  const multiDim=nKeys>=2;
+
+  const dates=results.map(r=>r.TimePeriod.Start);
+  const dailyTotals={}, svcTotals={}, subTotals={};
+
+  results.forEach(day=>{
+    const date=day.TimePeriod.Start;
+    dailyTotals[date]=0;
+    (day.Groups||[]).forEach(g=>{
+      const amt=parseFloat(g.Metrics.UnblendedCost.Amount)||0;
+      const svc=g.Keys[0];
+      svcTotals[svc]=(svcTotals[svc]||0)+amt;
+      dailyTotals[date]+=amt;
+      if(multiDim){
+        const sub=g.Keys[1];
+        if(!subTotals[svc]) subTotals[svc]={};
+        subTotals[svc][sub]=(subTotals[svc][sub]||0)+amt;
+      }
+    });
+  });
+
+  const grand=Object.values(svcTotals).reduce((a,b)=>a+b,0);
+  const start=dates[0], end=results[results.length-1].TimePeriod.End;
+  S={results,dates,dailyTotals,svcTotals,subTotals,grand,start,end,multiDim,nKeys};
+  expanded=new Set();
+
+  document.getElementById('period-label').textContent=start+' → '+end+'  ·  '+dates.length+' days';
+  document.getElementById('cv-total').textContent=fmt(grand);
+  document.getElementById('cv-days').textContent=dates.length;
+  document.getElementById('cs-days').textContent=start+' to '+end;
+  document.getElementById('cv-avg').textContent=fmt(grand/dates.length);
+  const top=Object.entries(svcTotals).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('cv-top').textContent=top[0].replace('Amazon ','').replace('AWS ','');
+  document.getElementById('cs-top').textContent=fmt(top[1]);
+
+  if(multiDim){
+    document.getElementById('card-dim').style.display='';
+    document.getElementById('cv-dim').textContent='SERVICE + USAGE_TYPE';
+    document.getElementById('cs-dim').textContent=nKeys+' group keys';
+    document.getElementById('th-detail').style.display='';
+    document.getElementById('hint-badge').style.display='';
+  } else {
+    document.getElementById('card-dim').style.display='none';
+    document.getElementById('th-detail').style.display='none';
+    document.getElementById('hint-badge').style.display='none';
+  }
+
+  renderChart(); renderTable();
+  document.getElementById('ft').textContent='AWS Cost Explorer · UnblendedCost · Daily Granularity · grouped by '+
+    (multiDim?'SERVICE + USAGE_TYPE':'SERVICE');
+}
+
+function renderChart(){
+  const el=document.getElementById('daily-chart');
+  const {dailyTotals,dates}=S;
+  const max=Math.max(...Object.values(dailyTotals));
+  el.innerHTML='';
+  dates.forEach(d=>{
+    const amt=dailyTotals[d]||0;
+    const pct=max?(amt/max*100):0;
+    el.innerHTML+=`<div class="bar-group" title="${d}: ${fmt(amt)}">
+      <div class="bar-amt">${fmt(amt)}</div>
+      <div class="bar" style="height:${pct}%"></div>
+      <div class="bar-date">${shortDate(d)}</div>
+    </div>`;
+  });
+}
+
+function sortBy(k){
+  if(sortKey===k) sortDir*=-1; else{ sortKey=k; sortDir=-1; }
+  document.getElementById('th-cost').textContent='Total Cost '+(sortKey==='cost'?(sortDir===-1?'▼':'▲'):'');
+  document.getElementById('th-name').textContent='Service '+(sortKey==='name'?(sortDir===-1?'▼':'▲'):'');
+  document.getElementById('th-cost').classList.toggle('sorted',sortKey==='cost');
+  document.getElementById('th-name').classList.toggle('sorted',sortKey==='name');
+  renderTable();
+}
+
+function toggleExpand(svc){
+  if(!S.multiDim) return;
+  if(expanded.has(svc)) expanded.delete(svc); else expanded.add(svc);
+  renderTable();
+}
+
+function renderTable(){
+  const {svcTotals,subTotals,grand,multiDim}=S;
+  if(!grand) return;
+  const q=document.getElementById('search').value.toLowerCase();
+  let entries=Object.entries(svcTotals).filter(([s])=>s.toLowerCase().includes(q));
+  entries.sort((a,b)=>sortKey==='name'?sortDir*a[0].localeCompare(b[0]):sortDir*(a[1]-b[1]));
+  document.getElementById('svc-count').textContent=entries.length+' services';
+
+  const tbody=document.getElementById('svc-body');
+  if(!entries.length){ tbody.innerHTML='<tr><td colspan="4"><div class="empty">No matching services</div></td></tr>'; return; }
+
+  let html='';
+  entries.forEach(([svc,amt])=>{
+    const pct=(amt/grand*100);
+    const isExp=expanded.has(svc);
+    const subs=multiDim&&subTotals[svc]?Object.entries(subTotals[svc]).sort((a,b)=>b[1]-a[1]):[];
+    const hasDetail=subs.length>0;
+    const icon=hasDetail?`<span class="expand-icon${isExp?' open':''}">▶</span>`:`<span style="display:inline-block;width:18px"></span>`;
+    const subHint=hasDetail?`<span style="font-family:var(--mono);font-size:0.6rem;color:var(--muted);margin-left:10px">${subs.length} usage type${subs.length>1?'s':''}</span>`:'';
+    const colspan=multiDim?'':`colspan="2"`;
+
+    html+=`<tr class="svc-row" onclick="toggleExpand('${svc.replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">
+      <td class="svc-name">${icon}${svc}${subHint}</td>
+      ${multiDim?`<td style="font-size:0.7rem;color:var(--muted);font-family:var(--mono)">${hasDetail?(isExp?'collapse ▲':'expand ▼'):''}</td>`:''}
+      <td class="cost-cell">${fmt(amt)}</td>
+      <td><div class="bar-inline"><div class="bar-inline-track"><div class="bar-inline-fill" style="width:${pct.toFixed(1)}%"></div></div><span style="font-family:var(--mono);font-size:0.68rem;color:var(--muted);min-width:36px">${pct.toFixed(1)}%</span></div></td>
+    </tr>`;
+
+    if(hasDetail&&isExp){
+      subs.forEach(([sub,subAmt])=>{
+        const sp=(subAmt/amt*100);
+        // strip leading region codes like "USE1-" and service prefixes for readability
+        const label=sub.replace(/^[A-Z]{2,4}\d*-/,'').replace(/^[^:]+:/,'') || sub;
+        html+=`<tr class="sub-row">
+          <td class="sub-name" title="${sub}">↳ ${label}</td>
+          ${multiDim?`<td class="sub-name" style="color:var(--muted);font-size:0.68rem;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${sub}">${sub}</td>`:''}
+          <td class="cost-cell" style="color:var(--muted)">${fmt(subAmt,6)}</td>
+          <td><div class="bar-inline"><div class="bar-inline-track" style="background:rgba(240,165,0,0.12)"><div class="bar-inline-fill" style="width:${sp.toFixed(1)}%;background:rgba(240,165,0,0.45)"></div></div><span style="font-family:var(--mono);font-size:0.65rem;color:var(--muted);min-width:36px">${sp.toFixed(1)}%</span></div></td>
+        </tr>`;
+      });
+    }
+  });
+  tbody.innerHTML=html;
+}
+
+
+
+</script>
+</body>
+</html>
+

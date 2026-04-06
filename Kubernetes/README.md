@@ -50,17 +50,10 @@ kubectl get rs
 kubectl get pods --show-labels
 ```
 You can monitor the Kubernetes Engine Dashboard in the GCP console  
-Alternatively, you can use k9s
 ```
-git clone https://github.com/derailed/k9s
-cd k9s
-make build # This will take a minute
-./execs/k9s
-```
-
-```
-# Generate load in a separate terminal, it will take a minute or two to fully scale up and down.  
-kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 1; do wget -q -O- http://hpa-example/dowork; done"
+wget -q -O- http://<external-ip>/hello
+wget -q -O- http://<external-ip>/dowork
+while sleep 1; do wget -q -O- http://<external-ip>/dowork; done"
 ```
 
 Roll an update to fix performance
@@ -76,7 +69,6 @@ Clean up Kubernetes
 kubectl delete service hpa-example
 kubectl delete deployment hpa-example
 kubectl delete hpa hpa-example
-kubectl delete pod load-generator
 gcloud compute forwarding-rules list
 gcloud container clusters delete hpa-example 
 ```

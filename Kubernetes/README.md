@@ -54,6 +54,9 @@ You can monitor the Kubernetes Engine Dashboard in the GCP console
 wget -q -O- http://<external-ip>/hello
 wget -q -O- http://<external-ip>/dowork
 while sleep 1; do wget -q -O- http://<external-ip>/dowork; done"
+
+kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin/sh -c "while sleep 1; do wget -q -O- http://hpa-example/dowork; done"
+
 ```
 
 Roll an update to fix performance

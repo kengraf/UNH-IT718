@@ -1,6 +1,8 @@
 # UNH-IT718-k8s
 Lab to support K8s discussion in class
 
+[Kubernetes Concepts Comic](https://cloud.google.com/kubernetes-engine/kubernetes-comic/)
+
 This is an example of using Kubernetes' horizontal pod autoscaling (HPA).  A container that provides moderate CPU utilization is needed.
 One is provided in [Github UNH-IT718-docker](https://github.com/kengraf/UNH-IT718-docker).  The result being a repo of YOUR_NAME/hpa-example:v1 hosted on Docker Hub.  If not, this lesson without edits pulls from the default repo of billiardyoda/hpa-example.
 

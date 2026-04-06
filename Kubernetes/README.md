@@ -13,7 +13,7 @@ If you are interested in a more complete deployment with back & front ends check
 Insure your Cloudshell settings are current.  This is needed if you have to reconnect after an inactivity timeout.
 ```
 gcloud config set project YOUR_PROJECT_ID
-gcloud config set compute/zone us-east1-b
+gcloud config set compute/zone us-central1
 ```
 You may need to enable service for your account
 ```

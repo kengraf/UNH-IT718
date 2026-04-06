@@ -29,7 +29,7 @@ gcloud container clusters describe hpa-example
 
 Pull example yaml
 ```
-git clone [https://github.com/kengraf/unh-it718-k8s.git](https://github.com/kengraf/UNH-IT718.git)
+git clone https://github.com/kengraf/UNH-IT718.git
 cd  UNH-IT718/Kubernetes
 ```
 

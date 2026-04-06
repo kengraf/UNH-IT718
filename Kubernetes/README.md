@@ -66,7 +66,7 @@ kubectl run -i --tty load-generator --rm --image=busybox --restart=Never -- /bin
 Roll an update to fix performance
 ```
 kubectl get deployments
-kubectl get pods
+kubectl get pods -o wide
 kubectl set image deployments/hpa-example hpa-example=billiardyoda/hpa-example-fast:v1
 
 ```
@@ -78,7 +78,7 @@ kubectl delete deployment hpa-example
 kubectl delete hpa hpa-example
 kubectl delete pod load-generator
 gcloud compute forwarding-rules list
-gcloud container clusters delete hpa-example
+gcloud container clusters delete hpa-example --region us-east1-b
 ```
 
 

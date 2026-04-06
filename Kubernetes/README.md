@@ -60,8 +60,12 @@ Roll an update to fix performance
 ```
 kubectl get deployments
 kubectl get pods -o wide
+kubectl scale deployment hpa-example --replicas=1
 kubectl set image deployments/hpa-example hpa-example=billiardyoda/hpa-example-fast:v1
+kubectl get pods -o custom-columns="POD:.metadata.name,IMAGE:.spec.containers[*].image,STATUS:.status.phase"
 
+
+kubectl scale deployment hpa-example --replicas=4
 ```
 
 Clean up Kubernetes
